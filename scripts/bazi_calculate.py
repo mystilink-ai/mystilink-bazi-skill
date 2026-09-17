@@ -135,10 +135,16 @@ class Pillar:
     branch: str
 
     def to_dict(self) -> Dict[str, Any]:
+        stem_index = _index_of(HEAVENLY_STEMS, self.stem)
+        branch_index = _index_of(EARTHLY_BRANCHES, self.branch)
+        text = self.stem + self.branch
         return {
+            "stem_index": stem_index,
+            "branch_index": branch_index,
             "stem": self.stem,
             "branch": self.branch,
-            "ganzhi": self.stem + self.branch,
+            "text": text,
+            "ganzhi": text,
             "stem_element": STEM_ELEMENTS.get(self.stem),
             "branch_element": BRANCH_ELEMENTS.get(self.branch),
             "zodiac": ZODIAC_ANIMALS.get(self.branch),
@@ -310,7 +316,9 @@ def compute_bazi(
     bazi_grid_cells = build_bazi_grid_cells(stems_branches, slot_labels)
 
     result: Dict[str, Any] = {
+        "schema_version": "mystilink.bazi.chart/0.1",
         "bazi_schema_version": "1.0",
+        "calendar_engine": "builtin",
         "birth_date": birth_date.isoformat(),
         "hour_interval": hi,
         "effective_hour": hi,
@@ -348,9 +356,73 @@ def parse_date(s: str) -> date:
     return date(y, m, d)
 
 
+def _load_profile_json(raw: str) -> Dict[str, Any]:
+    from pathlib import Path
+
+    if raw == "-":
+        text = sys.stdin.read()
+    else:
+        path = Path(raw)
+        text = path.read_text(encoding="utf-8") if path.is_file() else raw
+    data = json.loads(text)
+    if not isinstance(data, dict):
+        raise ValueError("profile JSON root must be an object")
+    return data
+
+
+def resolve_profile(data: Dict[str, Any]) -> tuple[date, int, int, Optional[str], Optional[float], bool]:
+    """
+    Accept mystilink.birth/0.1 or legacy skill profile.json fields.
+    Returns (civil_date, hour, minute, timezone, longitude, prefer_true_solar).
+    """
+    if data.get("schema_version") == "mystilink.birth/0.1" or (
+        isinstance(data.get("birth"), dict) and "datetime" in data["birth"]
+    ):
+        birth = data["birth"]
+        timezone = birth.get("timezone")
+        if not timezone:
+            raise ValueError("birth.timezone is required")
+        dt_raw = str(birth["datetime"]).strip().replace("Z", "+00:00")
+        instant = datetime.fromisoformat(dt_raw)
+        if instant.tzinfo is None:
+            raise ValueError("birth.datetime must include a timezone offset")
+        # Wall-clock fields as civil birth time (do not re-fold historical DST).
+        lon = birth.get("longitude")
+        if lon is None and isinstance(data.get("place"), dict):
+            lon = data["place"].get("lon")
+        return (
+            date(instant.year, instant.month, instant.day),
+            instant.hour,
+            instant.minute,
+            timezone,
+            float(lon) if lon is not None else None,
+            bool(birth.get("true_solar_time")),
+        )
+
+    # Legacy profile.json
+    if "birth_date" not in data:
+        raise ValueError("unsupported profile: need BirthProfile or birth_date")
+    civil = parse_date(str(data["birth_date"]))
+    hour, minute = 11, 0
+    if data.get("birth_time"):
+        parts = str(data["birth_time"]).split(":")
+        hour = int(parts[0])
+        minute = int(parts[1]) if len(parts) > 1 else 0
+    timezone = data.get("birth_place_timezone")
+    lon = data.get("birth_place_longitude")
+    return (
+        civil,
+        hour,
+        minute,
+        timezone if isinstance(timezone, str) else None,
+        float(lon) if lon is not None else None,
+        False,
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Calculate BaZi (four pillars) as JSON.")
-    parser.add_argument("--date", required=True, help="Birth date YYYY-MM-DD")
+    parser.add_argument("--date", required=False, default=None, help="Birth date YYYY-MM-DD")
     parser.add_argument(
         "--hour-interval",
         type=int,
@@ -381,30 +453,55 @@ def main() -> None:
         default=None,
         help="Birthplace longitude in degrees (east positive). Required for true solar time.",
     )
+    parser.add_argument(
+        "--birth-json",
+        "--profile-json",
+        dest="birth_json",
+        type=str,
+        default=None,
+        help="BirthProfile (mystilink.birth/0.1) or legacy profile.json path / '-' / inline JSON",
+    )
     args = parser.parse_args()
 
+    prefer_tst = False
+    timezone = args.timezone
+    longitude = args.longitude
+
     try:
-        birth = parse_date(args.date)
+        if args.birth_json:
+            profile = _load_profile_json(args.birth_json)
+            birth, hi, mi, tz, lon, prefer_tst = resolve_profile(profile)
+            if timezone is None:
+                timezone = tz
+            if longitude is None:
+                longitude = lon
+        else:
+            if not args.date:
+                raise ValueError("either --date or --birth-json is required")
+            birth = parse_date(args.date)
+            if args.hour is not None:
+                hi = max(0, min(23, args.hour))
+            elif args.hour_interval is not None:
+                hi = max(0, min(23, args.hour_interval))
+            else:
+                hi = 11
+            mi = max(0, min(59, args.minute))
     except Exception as e:
         print(json.dumps({"error": str(e)}, ensure_ascii=False), file=sys.stderr)
         sys.exit(1)
 
-    if args.hour is not None:
-        hi = max(0, min(23, args.hour))
-    elif args.hour_interval is not None:
-        hi = max(0, min(23, args.hour_interval))
-    else:
-        hi = 11
-
-    mi = max(0, min(59, args.minute))
     tst_enabled = False
     tst_delta = 0.0
+    if args.birth_json:
+        apply_tst = prefer_tst and timezone is not None and longitude is not None
+    else:
+        apply_tst = timezone is not None and longitude is not None
 
-    if args.timezone is not None and args.longitude is not None:
+    if apply_tst:
         try:
-            tz = ZoneInfo(args.timezone)
+            tz = ZoneInfo(timezone)  # type: ignore[arg-type]
             local_dt = datetime(birth.year, birth.month, birth.day, hi, mi, tzinfo=tz)
-            corrected_dt, tst_delta = apply_true_solar_time(local_dt, args.longitude)
+            corrected_dt, tst_delta = apply_true_solar_time(local_dt, longitude)  # type: ignore[arg-type]
             birth = corrected_dt.date()
             hi = corrected_dt.hour
             mi = corrected_dt.minute
@@ -422,6 +519,17 @@ def main() -> None:
         true_solar_enabled=tst_enabled,
         true_solar_delta_minutes=tst_delta,
     )
+    if timezone:
+        try:
+            local = datetime(
+                birth.year, birth.month, birth.day, hi, mi, tzinfo=ZoneInfo(timezone)
+            )
+            out["birth"] = {"datetime": local.isoformat(), "timezone": timezone}
+        except Exception:
+            out["birth"] = {
+                "datetime": f"{birth.isoformat()}T{hi:02d}:{mi:02d}:00",
+                "timezone": timezone,
+            }
     print(json.dumps(out, ensure_ascii=False, indent=2))
 
 

@@ -35,16 +35,22 @@ cp -R mystilink-bazi-skill /path/to/.cursor/skills/mystilink-bazi
 
 ```bash
 python3 scripts/bazi_calculate.py --date 1990-05-15 --hour 12
+python3 scripts/bazi_calculate.py --birth-json examples/profile.v0.json
+python3 scripts/bazi_calculate.py --profile-json examples/profile.json
 python3 scripts/bazi_dayun_calculate.py --date 1990-05-15 --gender female --count 8
 python3 scripts/bazi_liunian_calculate.py --year 2026 --day-stem 甲
 ```
 
 成功：stdout 输出 JSON。失败：非零退出码，并输出 `{"error":…}`。
 
+柱对象含 `stem_index`、`branch_index`、`text`，并保留旧字段 `ganzhi`（与 `text` 相同）。
+
 ## 工作流
 
-1. 采集出生资料（见 `examples/profile.json`）
-2. 按需运行排盘脚本
+1. 采集出生资料——任选其一：
+   - `examples/profile.v0.json`（`mystilink.birth/0.1` BirthProfile），或
+   - `examples/profile.json`（旧版 skill 字段）
+2. 按需运行排盘脚本（`--birth-json` / `--profile-json` 两种形状均可）
 3. 可选 Wiki 解读：
 
 ```text
@@ -58,7 +64,8 @@ GET https://wiki.mystilink.com/api/v1/pages/bazi.concept.ri-zhu?locale=en
 
 ## 示例
 
-- `examples/profile.json` — 虚构出生资料样例
+- `examples/profile.v0.json` — BirthProfile（`mystilink.birth/0.1`，虚构）
+- `examples/profile.json` — 旧版出生资料（虚构）；脚本仍接受
 
 ## 限制
 

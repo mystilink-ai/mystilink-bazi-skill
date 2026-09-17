@@ -35,16 +35,22 @@ From the skill directory:
 
 ```bash
 python3 scripts/bazi_calculate.py --date 1990-05-15 --hour 12
+python3 scripts/bazi_calculate.py --birth-json examples/profile.v0.json
+python3 scripts/bazi_calculate.py --profile-json examples/profile.json
 python3 scripts/bazi_dayun_calculate.py --date 1990-05-15 --gender female --count 8
 python3 scripts/bazi_liunian_calculate.py --year 2026 --day-stem 甲
 ```
 
 Success: JSON on stdout. Failure: non-zero exit and JSON `{"error":…}`.
 
+Pillar objects include `stem_index`, `branch_index`, `text`, and legacy `ganzhi` (`=` `text`).
+
 ## Workflow
 
-1. Collect birth profile (see `examples/profile.json`)
-2. Run chart scripts as needed
+1. Collect birth profile — either:
+   - `examples/profile.v0.json` (`mystilink.birth/0.1` BirthProfile), or
+   - `examples/profile.json` (legacy skill fields)
+2. Run chart scripts as needed (`--birth-json` / `--profile-json` accept both shapes)
 3. Interpret with Wiki (optional):
 
 ```text
@@ -58,7 +64,8 @@ Full agent instructions: `SKILL.md`. Short ids: `references/wiki-ids.md`.
 
 ## Examples
 
-- `examples/profile.json` — sample birth profile (fictional)
+- `examples/profile.v0.json` — BirthProfile (`mystilink.birth/0.1`, fictional)
+- `examples/profile.json` — legacy birth profile (fictional); still accepted by scripts
 
 ## Limits
 
