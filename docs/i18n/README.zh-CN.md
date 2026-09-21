@@ -1,6 +1,6 @@
 # Mystilink 八字 Skill
 
-> Languages: [English](README.md) | [简体中文](README.zh-CN.md)
+> Languages: [English](../../README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Français](README.fr.md) | [Español](README.es.md)
 
 ## 概述
 
@@ -76,7 +76,7 @@ GET https://wiki.mystilink.com/api/v1/pages/bazi.concept.ri-zhu?locale=en
 
 ## 许可
 
-MIT。见 [LICENSE](LICENSE)。
+MIT。见 [LICENSE](../../LICENSE)。
 
 ## 问题反馈
 
