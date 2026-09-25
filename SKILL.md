@@ -10,6 +10,7 @@ compatibility: "python3; network optional for wiki.mystilink.com API"
 metadata:
   mystilink:
     system: bazi
+    version: 0.1.0
     about: "Local BaZi chart / DaYun / LiuNian scripts plus optional Mystilink Wiki theory pages."
     wiki_base: https://wiki.mystilink.com
     wiki_api: /api/v1
