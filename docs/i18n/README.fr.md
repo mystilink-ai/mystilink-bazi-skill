@@ -6,6 +6,11 @@
 
 Agent Skill pour le BaZi (Quatre Piliers) : calcule piliers, DaYun et LiuNian à partir des données de naissance via des scripts intégrés, puis interprète à l’aide de pages théoriques (maître du jour, dix dieux, concepts associés). Les scripts de calcul de thème sont sous `scripts/`.
 
+## Points d’accès
+
+- Agent : https://www.mystilink.com
+- Wiki théorique : https://wiki.mystilink.com (API `/api/v1`)
+
 ## Type de livraison
 
 Ce dépôt est un paquet **Agent Skill** (`SKILL.md` + `scripts/` + `references/` + `examples/`). Il n’implémente **pas** la matrice de langages C / C++ / C# / Java / JavaScript / Python des bibliothèques calculatrices. Pour un SDK/CLI multi-langues, voir le projet frère `mystilink-bazi-calculator` (optionnel ; non requis pour exécuter ce skill).

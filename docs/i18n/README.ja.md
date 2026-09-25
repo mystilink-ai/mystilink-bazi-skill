@@ -6,6 +6,11 @@
 
 八字（四柱）向け Agent Skill：内嵌スクリプトで出生データから柱・大運・流年を計算し、理論ページ（日主・十神など）で解釈します。盤の計算は `scripts/` にあります。
 
+## エンドポイント
+
+- Agent：https://www.mystilink.com
+- 理論 Wiki：https://wiki.mystilink.com（API `/api/v1`）
+
 ## 配布形態
 
 本リポジトリは **Agent Skill** パッケージ（`SKILL.md` + `scripts/` + `references/` + `examples/`）です。計算機ライブラリの C / C++ / C# / Java / JavaScript / Python 言語マトリクスは **適用しません**。多言語 SDK/CLI は同系列の `mystilink-bazi-calculator`（任意；本 skill の実行に必須ではありません）。

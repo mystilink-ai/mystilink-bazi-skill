@@ -6,6 +6,11 @@
 
 팔자(사주) Agent Skill: 내장 스크립트로 출생 자료에서 사주·대운·유년을 계산한 뒤, 이론 페이지(일주, 십신 등)로 해석합니다. 차트 계산은 `scripts/`에 있습니다.
 
+## 엔드포인트
+
+- Agent: https://www.mystilink.com
+- 이론 Wiki: https://wiki.mystilink.com (API `/api/v1`)
+
 ## 배포 유형
 
 이 저장소는 **Agent Skill** 패키지(`SKILL.md` + `scripts/` + `references/` + `examples/`)입니다. 계산기 라이브러리의 C / C++ / C# / Java / JavaScript / Python 언어 매트릭스는 **적용되지 않습니다**. 다언어 SDK/CLI는 동계열 `mystilink-bazi-calculator`(선택; 이 skill 실행에 필수 아님).

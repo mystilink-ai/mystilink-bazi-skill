@@ -6,6 +6,11 @@
 
 八字 Agent Skill：透過內嵌腳本根據出生資料計算四柱、大運、流年，再結合理論詞條（日主、十神等）進行解讀。排盤演算法位於 `scripts/`。
 
+## 相關位址
+
+- Agent：https://www.mystilink.com
+- 理論 Wiki：https://wiki.mystilink.com（API `/api/v1`）
+
 ## 交付類型
 
 本倉庫為 **Agent Skill** 包（`SKILL.md` + `scripts/` + `references/` + `examples/`）。**不適用**計算器庫的 C / C++ / C# / Java / JavaScript / Python 語言矩陣。多語言 SDK/CLI 見同系列 `mystilink-bazi-calculator`（可選，執行本 skill 非必需）。
