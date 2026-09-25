@@ -79,6 +79,10 @@ GET https://wiki.mystilink.com/api/v1/pages/bazi.concept.ri-zhu?locale=en
 - 真太陽時需同時提供時區與經度
 - Wiki：省略 locale → `en`；缺譯可能回落 `zh-Hans`
 
+## 版本
+
+技能版本 `0.1.0`，記錄於 `SKILL.md` 的 `metadata.mystilink.version`，並見 [CHANGELOG.md](../../CHANGELOG.md)。
+
 ## 授權
 
 MIT。見 [LICENSE](../../LICENSE)。

@@ -79,6 +79,10 @@ GET https://wiki.mystilink.com/api/v1/pages/bazi.concept.ri-zhu?locale=en
 - 真太陽時にはタイムゾーンと経度の両方が必要
 - Wiki locale：省略 → `en`；欠訳時は `zh-Hans` にフォールバックする場合あり
 
+## バージョン
+
+スキルのバージョンは `0.1.0`。`SKILL.md` の `metadata.mystilink.version` に記録し、[CHANGELOG.md](../../CHANGELOG.md) にも記載しています。
+
 ## ライセンス
 
 MIT。[LICENSE](../../LICENSE) を参照。

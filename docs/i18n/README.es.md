@@ -79,6 +79,10 @@ Instrucciones completas del agente: `SKILL.md`. Ids cortos: `references/wiki-ids
 - El tiempo solar verdadero necesita zona horaria y longitud
 - Locale Wiki: omitir → `en`; traducciones faltantes pueden caer a `zh-Hans`
 
+## Versión
+
+Versión de la skill: `0.1.0`, registrada en `SKILL.md` bajo `metadata.mystilink.version` y en [CHANGELOG.md](../../CHANGELOG.md).
+
 ## Licencia
 
 MIT. Véase [LICENSE](../../LICENSE).

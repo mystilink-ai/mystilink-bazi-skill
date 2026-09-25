@@ -79,6 +79,10 @@ Instructions agent complètes : `SKILL.md`. Ids courts : `references/wiki-ids.md
 - Le temps solaire vrai nécessite fuseau horaire et longitude
 - Locale Wiki : omettre → `en` ; traductions manquantes peuvent basculer vers `zh-Hans`
 
+## Version
+
+Version du skill : `0.1.0`, consignée dans `SKILL.md` sous `metadata.mystilink.version` et dans [CHANGELOG.md](../../CHANGELOG.md).
+
 ## Licence
 
 MIT. Voir [LICENSE](../../LICENSE).

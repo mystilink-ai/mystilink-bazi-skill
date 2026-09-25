@@ -79,6 +79,10 @@ Full agent instructions: `SKILL.md`. Short ids: `references/wiki-ids.md`.
 - True solar time needs both timezone and longitude
 - Wiki locale: omit → `en`; missing translations may fall back to `zh-Hans`
 
+## Version
+
+Skill version `0.1.0`, recorded in `SKILL.md` under `metadata.mystilink.version` and in [CHANGELOG.md](CHANGELOG.md).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
